@@ -7,9 +7,9 @@ class CityStateColumnify {
   private $column_name;
   private $city_pattern = "/^\W*(city|town(?:ship)|municipality|village)\W*?$/i";
   private $state_pattern = "/^\W*state\W*$/i";
-  // proporties for find_mix
+  // proporties for find_mixed
   private $combo_name_pattern = "/^\W*(state)\W*?(city|town(?:ship)?|municipality|village)?\W*(state)?\W*$/i";
-  public $cell_pattern = "/([A-Z ]+)(?:\W[^ ])+([A-Z ]+)/i";
+  public $cell_pattern = "/^(\w+).*(?: |,)(\w+)/";
   private $split_method;
 
 
@@ -35,22 +35,7 @@ class CityStateColumnify {
   // and their's the possibility that they are mixed. 
   
   public function find_mixed(){
-    // Will be using the state column for database search.
-    // It has only 102 records, aprox 2000 times less then city records.
-    // All find_mixed helper methods are placed under and indentifying "helper" comment.
-    if(($result = $this->column_name_search())){
-      // 1 means we know it's the right column, but we are not sure which half
-      // corrospond to city and state. Point is to skip straight to like_query
-      // and exit whether true or false.
-      return $result == 1 ? $this->like_query() : false;
-    }
-    elseif($this->has_sides()){
-      return true;
-    }
-    elseif($this->like_query()){
-      return true;
-    }
-    return false;
+    $this->column_name_search() ? true : $this->like_query();
   }
 
 
@@ -99,77 +84,23 @@ class CityStateColumnify {
   ########    Mixed (find_mix) Helper Methods!    #############
   #############################################################
   #############################################################
-
-  // Checks columns names for city/state + finds which side is which
-  // as all methods will.
+  // Checks columns names for city/state.
   private function column_name_search(){
     foreach($this->parent->csv_columns as $i=>$column){
       preg_match($this->combo_name_pattern, $culumn, $matches);
       if(count($matches) >= 3){
-        if(strtolower($matches[3]) == "state" || $matches[2] == "state"){
-          $this->split_method = $this->find_sides($i);
-          return $this->split_method ? $this->parent->store_column("City/State", $i, "place") : 1;
-        }
+        return $this->parent->store_column("City/State", $i);
       }
     }
     return false;
   } 
-
- // Feeds the next method the data it needs for analysis. 
- // Seperated for DRY reasons.
-  private function has_sides(){
-    for($i = 0; $i < count($this->parent->sample_rows); $i++){
-      if(($this->split_method = $this->get_sides($i))){
-        return $this->parent->store_column("City/State", $i, "place");
-      }
-    }
-    return false;
-  }
-
-   // Finds city/state by indentifying charactersitcs of a double data
-  // cell. (aka ',' or '-'). Then by confirming results against database
-
-  private function get_sides($index = 0){
-    $cell1 = $this->parent->sample_rows[0][$index]; 
-    $cell2 = $this->parent->sample_rows[1][$index]; 
-    $cell3 = $this->parent->sample_rows[2][$index]; 
-
-    $uniques = count(array_unique(array($cell1, $cell2, $cell3)));
-
-    preg_match($this->cell_pattern, $cell1, $matches1);
-    preg_match($this->cell_pattern, $cell2, $matches2);
-    preg_match($this->cell_pattern, $cell3, $matches3);
-
-    $s_on_right = "state = '$matches1[2]' OR state = '$matches2[2]' OR state = '$matches3[2]'";
-    $c_on_left = "city = '$matches1[1]' OR city = '$matches2[1]' OR city = '$matches3[1]'";
-    
-    $s_on_left = "state = '$matches1[1]' OR state = '$matches2[1]' OR state = '$matches3[1]'";
-    $c_on_right = "city =  '$matches1[2]' OR city = '$matches2[2]' OR city = '$matches3[2]'";
-    
-    if(count($matches1) == 3){
-      $r_state_boolean = $this->count_records($s_on_right, "state") == ($uniques - 1);
-      $l_city_boolean = $this->count_records($s_on_right, "state") == ($uniques - 1);
-      
-      if($l_city_boolean && $r_state_boolean){
-        return "right()"; 
-      }
-      elseif($this->count_records($s_on_left, "state") == ($uniques - 1)){
-        return $this->count_records($s_on_left, "state") == ($uniques - 1) ? "left()" : false;
-      }
-    }
-  }
 
   // Feeds the next method the data it needs for analysis.
   // Seperated for DRY reasons.
   private function like_query(){
     foreach($this->parent->sample_rows[0] as $i=>$cell){
       if($this->possible_state($cell)){
-
-        $new_cell = $this->parent->sample_rows[1][$i];
-
-        if(($this->split_method = $this->possible_state($new_cell))){
-          return $this->parent->store_column("City/State", $i, "place");
-        }
+        return $this->parent->store_column("City/State", $i);
       }
     }
     return false;
@@ -177,28 +108,26 @@ class CityStateColumnify {
 
   // Using the data fed to it by the previous method, splits and compares
   // the first and last string of each cell against the database. 
-  // Uses LIKE wildcard search to find possible matches, and then 
-  // compares the 2nd half to confirm that's it a city.
+  // Then compares the 2nd half to confirm that's it a city.
 
   private function possible_state($cell){
     $split_cell = explode(" ", $cell);
     $s_cell_count = count($split_cell) - 1;
-    $query1 = " state LIKE '%$split_cell[$s_cell_count]%'";
-    $query2 = " state LIKE '%$split_cell[0]%'";
+    $query1 = " state_right = '$split_cell[$s_cell_count]'";
+    $query2 = " state_left = '$split_cell[0]'";
 
     if(($result = $this->standard_search($query1, "state"))){
       if($this->possible_city($result, $cell)){
         eval(\Psy\sh());
-        return "Right";
+        return true;
       }
       elseif(($result = $this->standard_search($query2, "state"))){
-        eval(\Psy\sh());
-        $this->possible_city($result, $cell, false) ? "Left" : false;
+        return $this->possible_city($result, $cell, false);
       }
     }
   }
 
-  // Compares possible states fed by prevoise method and confrims
+  // Compares possible states fed by previous method and confrims
   // validity by comparing it's other half against a list of cities.
 
   private function possible_city($possible_states, $query, $right_side = true){
@@ -206,10 +135,61 @@ class CityStateColumnify {
     foreach($possible_states as $k=>$possibly){
       $pattern = $right_side ? "/(\w+) $possibly$/i"  : "/^$possibly (\w+)/i";
       if(preg_match($pattern, $query, $matches)){
-        return $this->standard_search("city = '$matches[1]'", "city") ? true : false; 
+        return $this->standard_search("city = '$matches[1]'", "city"); 
       }
     }
   }
+
+
+  ###############################################################
+  // Next to method's seem unnessery now. Keeping them until product is complete.
+  ###############################################################
+  // Feeds the next method the data it needs for analysis. 
+  // Seperated for DRY reasons.
+
+  // private function has_sides(){
+  //   for($i = 0; $i < count($this->parent->sample_rows); $i++){
+  //     if(($this->split_method = $this->get_sides($i))){
+  //       return $this->parent->store_column("City/State", $i, "place");
+  //     }
+  //   }
+  //   return false;
+  // }
+
+  //  // Finds city/state by indentifying charactersitcs of a double data
+  // // cell. (aka ',' or '-'). Then by confirming results against database
+
+  // private function get_sides($index = 0){
+  //   $cell1 = $this->parent->sample_rows[0][$index]; 
+  //   $cell2 = $this->parent->sample_rows[1][$index]; 
+  //   $cell3 = $this->parent->sample_rows[2][$index]; 
+
+  //   $uniques = count(array_unique(array($cell1, $cell2, $cell3)));
+
+  //   preg_match($this->cell_pattern, $cell1, $matches1);
+  //   preg_match($this->cell_pattern, $cell2, $matches2);
+  //   preg_match($this->cell_pattern, $cell3, $matches3);
+
+  //   $s_on_right = "state = '$matches1[2]' OR state = '$matches2[2]' OR state = '$matches3[2]'";
+  //   $c_on_left = "city = '$matches1[1]' OR city = '$matches2[1]' OR city = '$matches3[1]'";
+    
+  //   $s_on_left = "state = '$matches1[1]' OR state = '$matches2[1]' OR state = '$matches3[1]'";
+  //   $c_on_right = "city =  '$matches1[2]' OR city = '$matches2[2]' OR city = '$matches3[2]'";
+    
+  //   if(count($matches1) == 3){
+  //     $r_state_boolean = $this->count_records($s_on_right, "state") == ($uniques - 1);
+  //     $l_city_boolean = $this->count_records($s_on_right, "state") == ($uniques - 1);
+      
+  //     if($l_city_boolean && $r_state_boolean){
+  //       return "right()"; 
+  //     }
+  //     elseif($this->count_records($s_on_left, "state") == ($uniques - 1)){
+  //       return $this->count_records($s_on_left, "state") == ($uniques - 1) ? "left()" : false;
+  //     }
+  //   }
+  // }
+
+
 
   // Fulfills commen search needs
   // Standard search is for regurler searches when you need the actaul results back

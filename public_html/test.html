@@ -1,152 +1,133 @@
-<div class="main-content">
-   <div class="page-content">
-      <!-- /section:settings.box -->
-      <div class="page-content-area">
-         <!-- for range selector -->
-         <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-         
-         <div class="row">
-            <div class="col-xs-12 col-sm-4 col-md-3" style="padding:10px;font-size:18px;">
-               
+<html><head></head><body><div class="main-content">
+        <div class="page-content">
+
+          <!-- /section:settings.box -->
+          <div class="page-content-area">
+  
+
+
+  <!-- for range selector -->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+            
+                          <div class="alert alert-info">
+                <strong><i class="fa fa-info-circle"></i></strong> This is random data.  <strong><a href="//mivtzoim.net/signup.php">Sign up</a></strong> to see samples of real data.<br>
+              </div>
+            
+                        
+            <div class="row">
+
+                            
+              <div class="col-xs-12 col-sm-4 col-md-3" style="padding:10px;font-size:18px;">
+                <a href="../chabad/gen_spreadsheet.php?name_id=sample&amp;key=123"><i class="fa fa-file-excel-o"></i> Download Spreadsheet</a>
+              </div>
+              
+              <div class="col-xs-12 col-sm-8 col-md-9" style="padding:10px;font-size:15px;">
+                <i class="fa fa-info-circle"></i> 
+
+                More info about the data <a href="https://mivtzoim.net/chabad/faq_modal.php" data-target="#faq" data-toggle="modal"><strong>here</strong></a>.  
+                Click                table header to sort.
+
+              </div>
+              
             </div>
-            <div class="col-xs-12 col-sm-8 col-md-9" style="padding:10px;font-size:15px;">
-               <i class="fa fa-info-circle"></i> 
-               More info about the data <a href="https://mivtzoim.net/chabad/faq_modal.php" data-target="#faq" data-toggle="modal"><strong>here</strong></a>.  
-               Click                 table header to sort.
-            </div>
-         </div>
-         <div class="tabbable">
-            <ul class="nav nav-tabs" id="myTab">
-               <li class="active">
+            
+
+            <div class="tabbable">
+              <ul class="nav nav-tabs" id="myTab">
+                <li class="active">
                   <a data-toggle="tab" href="#home">
-                  Residential
+                    Residential
                   </a>
-               </li>
-               <li>
+                </li>
+                <li>
                   <a data-toggle="tab" href="#messages">
-                  Business
+                    Business
                   </a>
-               </li>
-            </ul>
-            <div class="tab-content">
-               <div id="home" class="tab-pane fade in active" style="overflow-x:scroll;">
-                  <div style="display:inline-block;margin-right: 5px;margin-bottom: 10px;">
-                     <label for="jewishness_val">Jewishness:</label>
-                     <input type="text" id="jewishness_val" readonly="" style="border:0; color: #424242; font-weight:bold;background: white!important;width: 55px;">
-                  </div>
-                  <div id="jewishness_range" style="display: inline-block;min-width: 300px;width: 100%;max-width: 500px;" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all">
-                     <div class="ui-slider-range ui-widget-header ui-corner-all" style="left: 5.31915%; width: 94.6809%;"></div>
-                     <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" style="left: 5.31915%;"></span><span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" style="left: 100%;"></span>
-                  </div>
+                </li>
+              </ul>
+
+              <div class="tab-content">
+                <div id="home" class="tab-pane fade in active" style="overflow-x:scroll;">      
+
+                    <div style="display:inline-block;margin-right: 5px;margin-bottom: 10px;">
+                      <label for="jewishness_val">Jewishness:</label>
+                      <input type="text" id="jewishness_val" readonly="" style="border:0; color: #424242; font-weight:bold;background: white!important;width: 55px;">
+                    </div>
+
+                    <div id="jewishness_range" style="display: inline-block;min-width: 300px;width: 100%;max-width: 500px;" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"><div class="ui-slider-range ui-widget-header ui-corner-all" style="left: 5.31915%; width: 94.6809%;"></div><span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" style="left: 5.31915%;"></span><span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" style="left: 100%;"></span></div>                
+
+                   
+
                   <div id="home_data">
-                     <div id="res_table_wrapper" class="dataTables_wrapper form-inline no-footer">
-                        <div class="row">
-                           <div class="col-xs-6">
-                              <div class="dataTables_length" id="res_table_length">
-                                 <label>
-                                    Display 
-                                    <select name="res_table_length" aria-controls="res_table" class="form-control input-sm">
-                                       <option value="100">100</option>
-                                       <option value="250">250</option>
-                                       <option value="500">500</option>
-                                       <option value="-1">All</option>
-                                    </select>
-                                    records
-                                 </label>
-                              </div>
-                           </div>
-                           <div class="col-xs-6">
-                              <div id="res_table_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control input-sm" aria-controls="res_table"></label></div>
-                           </div>
-                        </div>
-                        <table id="res_table" class="table table-striped table-bordered table-hover dataTable no-footer" role="grid" aria-describedby="res_table_info">
-                           <thead>
-                              <tr role="row">
-                                 <th><span data-rel="tooltip" data-original-title="Jewish Probability from 1 (low) to 99 (high) based on name">Jewishness</span></th>
-                                 <th class="sorting_asc" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="Distance: activate to sort column ascending" aria-sort="ascending"><span data-rel="tooltip" data-original-title="Distance from Chabad house in miles">Distance</span></th>
-                                 <th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending"><span data-rel="tooltip" data-original-title="First and Last name">Name</span></th>
-                                 <th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="Address: activate to sort column ascending">Address</th>
-                                 <th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">City</th>
-                                 <th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="Zip: activate to sort column ascending">Zip</th>
-                                 <th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="Value: activate to sort column ascending"><span data-rel="tooltip" data-original-title="Property market value based on tax records">Value</span></th>
-                                 <th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="New Mover?: activate to sort column ascending"><span data-rel="tooltip" data-original-title="If homeowner bought property within last 2 years">New Mover?</span></th>
-                                 <th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="Purchase Date: activate to sort column ascending"><span data-rel="tooltip" data-original-title="Date owner bought property">Purchase Date</span></th>
-                                 <th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="Main Home?: activate to sort column ascending"><span data-rel="tooltip" data-original-title="Primary residence (Yes/No/Unknown) based on tax records">Main Home?</span></th>
-                                 <th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending"><span data-rel="tooltip" data-original-title="Resident's age based on tax records">Age</span></th>
-                                 <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Phone">Phone</th>
-                                 <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Updated"><span data-rel="tooltip" data-original-title="Date data last updated from source">Updated</span></th>
-                                 <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Source"><span data-rel="tooltip" data-original-title="Data Source.  For NYC.gov the BBL is the Borough, Block and Lot.  Click link and enter numbers into boxes to search, e.x. 1-2-3 is Borough 1 (Manhattan), Block 2 and Lot 3">Source</span></th>
-                              </tr>
-                           </thead>
-                           <tbody>
-                              <tr role="row" class="odd">
-                                 <td class="">14</td>
-                                 <td class="sorting_1">0.00</td>
-                                 <td class="">William Weiss</td>
-                                 <td>213 S 9th St </td>
-                                 <td>Lincoln</td>
-                                 <td>68508</td>
-                                 <td>$241,400</td>
-                                 <td>
-                                    Yes       
-                                 </td>
-                                 <td>
-                                    3/19/1998       
-                                 </td>
-                                 <td>
-                                    Yes       
-                                 </td>
-                                 <td>
-                                    Adult (18-65)       
-                                 </td>
-                                 <td><a href="http://www.whitepages.com/search/FindNearby?utf8=%E2%9C%93&amp;street=213 S 9th St&amp;where=Lincoln%2C+" target="_blank">Lookup</a></td>
-                                 <td>
-                                    11/8/2015       
-                                 </td>
-                                 <td>
-                                    <span style="font-size:11px;">Random Data</span>
-                                 </td>
-                              </tr>
-                           </tbody>
-                        </table>
-                        <div class="row">
-                           <div class="col-xs-6">
-                              <div class="dataTables_info" id="res_table_info" role="status" aria-live="polite"></div>
-                           </div>
-                           <div class="col-xs-6">
-                              
-                           </div>
-                        </div>
-                     </div>
-                     <script>
-                        $('[data-rel="tooltip"]').tooltip({placement: 'bottom'});
-                     </script>
-                  </div>
-               </div>
-               <div id="messages" class="tab-pane fade" style="overflow-x:scroll;">
-                  <div id="bus_table_wrapper" class="dataTables_wrapper form-inline no-footer">
-                     <div class="row">
-                        <div class="col-xs-6">
-                           
-                        </div>
-                        <div class="col-xs-6">
-                           
-                        </div>
-                     </div>
-                     
-                     <div class="row">
-                        <div class="col-xs-6">
-                          
-                        </div>
-                        <div class="col-xs-6">
-                          
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-   </div>
-   <!-- /.page-content-area -->
+<div id="res_table_wrapper" class="dataTables_wrapper form-inline no-footer"><div class="row"><div class="col-xs-6"><div class="dataTables_length" id="res_table_length"><label>Display <select name="res_table_length" aria-controls="res_table" class="form-control input-sm"><option value="100">100</option><option value="250">250</option><option value="500">500</option><option value="-1">All</option></select> records</label></div></div><div class="col-xs-6"><div id="res_table_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control input-sm" aria-controls="res_table"></label></div></div></div><table id="res_table" class="table table-striped table-bordered table-hover dataTable no-footer" role="grid" aria-describedby="res_table_info">
+  <thead>
+    <tr role="row"><th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="Jewishness: activate to sort column ascending"><span data-rel="tooltip" data-original-title="Jewish Probability from 1 (low) to 99 (high) based on name">Jewishness</span></th><th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="Distance: activate to sort column ascending"><span data-rel="tooltip" data-original-title="Distance from Chabad house in miles">Distance</span></th><th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending"><span data-rel="tooltip" data-original-title="First and Last name">Name</span></th><th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="Address: activate to sort column ascending">Address</th><th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">City</th><th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="Zip: activate to sort column ascending">Zip</th><th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="Value: activate to sort column ascending"><span data-rel="tooltip" data-original-title="Property market value based on tax records">Value</span></th><th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="New Mover?: activate to sort column ascending"><span data-rel="tooltip" data-original-title="If homeowner bought property within last 2 years">New Mover?</span></th><th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="Purchase Date: activate to sort column ascending"><span data-rel="tooltip" data-original-title="Date owner bought property">Purchase Date</span></th><th class="sorting" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="Main Home?: activate to sort column ascending"><span data-rel="tooltip" data-original-title="Primary residence (Yes/No/Unknown) based on tax records">Main Home?</span></th><th class="sorting_desc" tabindex="0" aria-controls="res_table" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" aria-sort="descending"><span data-rel="tooltip" data-original-title="Resident's age based on tax records">Age</span></th><th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Phone">Phone</th><th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Updated"><span data-rel="tooltip" data-original-title="Date data last updated from source">Updated</span></th><th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Source"><span data-rel="tooltip" data-original-title="Data Source.  For NYC.gov the BBL is the Borough, Block and Lot.  Click link and enter numbers into boxes to search, e.x. 1-2-3 is Borough 1 (Manhattan), Block 2 and Lot 3">Source</span></th></tr>
+  </thead>
+
+  
+</table><div class="row"><div class="col-xs-6"><div class="dataTables_info" id="res_table_info" role="status" aria-live="polite">Showing 1 to 100 of 622 entries</div></div><div class="col-xs-6"><div class="dataTables_paginate paging_simple_numbers" id="res_table_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="res_table" tabindex="0" id="res_table_previous"><a href="#">Previous</a></li><li class="paginate_button active" aria-controls="res_table" tabindex="0"><a href="#">1</a></li><li class="paginate_button " aria-controls="res_table" tabindex="0"><a href="#">2</a></li><li class="paginate_button " aria-controls="res_table" tabindex="0"><a href="#">3</a></li><li class="paginate_button " aria-controls="res_table" tabindex="0"><a href="#">4</a></li><li class="paginate_button " aria-controls="res_table" tabindex="0"><a href="#">5</a></li><li class="paginate_button " aria-controls="res_table" tabindex="0"><a href="#">6</a></li><li class="paginate_button " aria-controls="res_table" tabindex="0"><a href="#">7</a></li><li class="paginate_button next" aria-controls="res_table" tabindex="0" id="res_table_next"><a href="#">Next</a></li></ul></div></div></div></div>
+
+<script>
+$('[data-rel="tooltip"]').tooltip({placement: 'bottom'});
+</script>
 </div>
+
+                </div>
+                <div id="messages" class="tab-pane fade" style="overflow-x:scroll;">
+
+                <div id="bus_table_wrapper" class="dataTables_wrapper form-inline no-footer"><div class="row"><div class="col-xs-6"><div class="dataTables_length" id="bus_table_length"><label>Display <select name="bus_table_length" aria-controls="bus_table" class="form-control input-sm"><option value="100">100</option><option value="250">250</option><option value="500">500</option><option value="-1">All</option></select> records</label></div></div><div class="col-xs-6"><div id="bus_table_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control input-sm" aria-controls="bus_table"></label></div></div></div><table id="bus_table" class="table table-striped table-bordered table-hover dataTable no-footer" role="grid" aria-describedby="bus_table_info">
+                  <thead>
+                    <tr role="row"><th class="sorting_desc" tabindex="0" aria-controls="bus_table" rowspan="1" colspan="1" aria-sort="descending" aria-label="Jewishness: activate to sort column ascending"><span data-rel="tooltip" data-original-title="Jewish Probability from 1 (low) to 99 (high) based on name">Jewishness</span></th><th class="sorting" tabindex="0" aria-controls="bus_table" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending"><span data-rel="tooltip" data-original-title="First and Last name">Name</span></th><th class="sorting" tabindex="0" aria-controls="bus_table" rowspan="1" colspan="1" aria-label="Bus Name: activate to sort column ascending">Bus Name</th><th class="sorting" tabindex="0" aria-controls="bus_table" rowspan="1" colspan="1" aria-label="Address: activate to sort column ascending">Address</th><th class="sorting" tabindex="0" aria-controls="bus_table" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending">City</th><th class="sorting" tabindex="0" aria-controls="bus_table" rowspan="1" colspan="1" aria-label="Zip: activate to sort column ascending">Zip</th><th class="sorting" tabindex="0" aria-controls="bus_table" rowspan="1" colspan="1" aria-label="Updated: activate to sort column ascending"><span data-rel="tooltip" data-original-title="Date data last updated from source">Updated</span></th><th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Source"><span data-rel="tooltip" data-original-title="Data Source">Source</span></th></tr>
+                  </thead>
+
+                  <tbody>
+                    <tr role="row" class="odd">
+                      <td class="">91</td>
+                              <td>3.18</td>
+                      
+                      <td>Feige Adler</td>
+                      <td>4124 Old Dairy Rd </td>
+                      <td>Lincoln</td>
+                      <td>68521</td>
+                      <td>$263,200</td>
+
+                              <td>
+                        Yes       </td>
+                      <td>
+                        10/30/2006        </td>                 
+                      
+                              <td>
+                        Yes       </td>
+                      
+                              <td class="sorting_1">
+                        Senior (&gt;65)       </td>                       
+                      
+                      <td><a href="http://www.whitepages.com/search/FindNearby?utf8=%E2%9C%93&amp;street=4124 Old Dairy Rd&amp;where=Lincoln%2C+" target="_blank">Lookup</a></td>
+
+                      <td>
+                        11/8/2015       </td>
+
+                      <td>
+                        
+                          <span style="font-size:11px;">Random Data</span>
+
+                                </td>
+                    </tr>
+                  </tbody>
+                                        
+                  <tr class="odd"><td valign="top" colspan="8" class="dataTables_empty">No data available in table</td></tr></tbody>
+                </table><div class="row"><div class="col-xs-6"><div class="dataTables_info" id="bus_table_info" role="status" aria-live="polite">Showing 0 to 0 of 0 entries</div></div><div class="col-xs-6"><div class="dataTables_paginate paging_simple_numbers" id="bus_table_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="bus_table" tabindex="0" id="bus_table_previous"><a href="#">Previous</a></li><li class="paginate_button next disabled" aria-controls="bus_table" tabindex="0" id="bus_table_next"><a href="#">Next</a></li></ul></div></div></div></div>                     
+
+                </div>
+              </div>
+            </div>
+
+            </div>
+
+                        
+
+
+
+          </div><!-- /.page-content-area -->
+        </div></body></html>

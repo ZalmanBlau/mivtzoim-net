@@ -1,5 +1,7 @@
 <?php
 require_once(__DIR__ . "/../../includes.php");
+use Cartalyst\Sentinel\Native\Facades\Sentinel;
+use Illuminate\Database\Capsule\Manager as Capsule;
 
 class Columnify {
   public $file_path;
@@ -54,7 +56,7 @@ class Columnify {
     // the above proccess will be initiated once the find method is called
     // __construct will do a regex on the file extension and return an error if its invalid
     ##########################
-    return $this->file_path = $file_name;
+    return $this->file_path = __DIR__ . "/../.." . $file_name;
   }
 
   public function find(){
@@ -85,17 +87,17 @@ class Columnify {
   }
 
   private function csv_sample(){
-    $rows = [];
-    $i = 0;
+    $doc = PHPExcel_IOFactory::load($this->file_path);
+    $sheet = $doc->setActiveSheetIndex(0);
 
-    if (($handle = fopen($this->file_path, "r")) !== FALSE) {
-      while($i < 6 && ($data = fgetcsv($handle, 1000, ",")) !== FALSE){
-        array_push($rows, $data);
-        $i++; 
+    $rows = array();
+    for($i = 1; $i < 7; $i++){
+      array_push($rows, array());
+      $cellIterator = $sheet->getRowIterator($i)->current()->getCellIterator();
+      foreach($cellIterator as $cell){
+        array_push($rows[$i-1], $cell->getValue());
       }
-      fclose($handle);
     }
-
     return $rows;
   }
 
@@ -118,7 +120,6 @@ class Columnify {
   public function store_column($new_name, $position, $category){
     // $state_side holds a value of null or 'right' and 'left'. 
     // This becomes relevent if the city and states columns are mixed.
-    
     $this->eliminate_column($position);
     
     return $this->column_positions[$new_name] = array(

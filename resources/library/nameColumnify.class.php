@@ -9,8 +9,8 @@ class NameColumnify {
   private $name_pattern = "/^\W*(?!.*company|corporation)(?:(first|last)|.*)\W*name\W*(?:(first|last)|.*)\W*$/i";
   private $cell_pattern = "/^mrs?\W*/i";
   private $comma_split = "/^(.*),+((?:\W*\w+\W*)+)$/";
-  private $right_split = "/(.+)\W*(\w+)\W*$/";
-  private $left_split = "/(\w+)\W*(.+)\W*$/";
+  private $right_split = "/^(.+)+[ -]((?:\w|')+\W*)$/";
+  private $left_split = "/^((?:\w|')+)[ -](.+)+$/";
   
 
   public function __construct($parent){

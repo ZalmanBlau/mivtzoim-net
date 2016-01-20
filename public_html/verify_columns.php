@@ -1,10 +1,16 @@
 <?php 
-  $start = microtime(true);
   require_once("../includes.php");
+  use Cartalyst\Sentinel\Native\Facades\Sentinel;
+  Sentinel::getUser();
+  $start = microtime(true);
 
-  $csv_file = "/Users/Zalman/dev/gorin-work/mivtzoim-net/documents/listall.csv";
-  $parser = new Columnify($csv_file);
-  $dataMerge = new DataMerge($parser);
+  if(!Sentinel::check()){
+    $_SESSION["login_redirect"] = "/public_html/verify_columns.php";
+    header("location: /public_html/login.php");
+    die();
+  }
+  
+  $parser = $initializer->columnify($_SESSION["file_path"]);
   $columns_info = $parser->find();
   $form_options = $parser->form_options;
   $original_rows = $parser->original_rows;
@@ -56,7 +62,6 @@
   foreach($original_rows as $row){
     $spreadsheet .= "<tr>";
     foreach($row as $cell){
-      if($cell)
       $spreadsheet .= "<td> $cell </td>";
     }
     $spreadsheet .= "</tr>";
@@ -185,6 +190,7 @@
 
 
 
+              
 
 
                             
